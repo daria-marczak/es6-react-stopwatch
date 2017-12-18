@@ -1,4 +1,4 @@
-const pad0(value) => {
+const pad0 = (value) => {
     let result = value.toString();
     if (result.length < 2) {
         result = "0" + result;
@@ -6,7 +6,7 @@ const pad0(value) => {
     return result;
 };
 
-class App exetends React.Component {
+class App extends React.Component {
     constructor() {
         super();
         this.state= {

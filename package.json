@@ -8,7 +8,10 @@
     "babel-preset-env": "^1.6.1",
     "babel-polyfill": "^6.26.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "babel script.js --watch --out-file script-compiled.js"
