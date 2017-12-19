@@ -14,18 +14,17 @@ class App extends React.Component {
             seconds: 0,
             miliseconds: 0,
             running: false,
-            display: display,
-            reset: reset,
-            print: this.times
         }
     }
     reset = () => {
-        this.times = {
-            minutes: 0,
-            seconds: 0,
-            miliseconds: 0
-        };
-        this.print(this.times);
+        if (!this.state.running) {
+            this.setState({
+                minutes: 0,
+                seconds: 0,
+                miliseconds: 0
+            });
+        }
+
     }
     format(times) {
         return `${pad0(times.minutes)}:${pad0(times.seconds)}:${pad0(Math.floor(times.miliseconds))}`;
@@ -33,47 +32,57 @@ class App extends React.Component {
     start() {
         if(!this.running) {
             this.running = true;
-            this.watch = setInterval() => this.step(), 10);
+            this.watch = setInterval(() => this.step(), 10);
         }
     }
     step() {
         if (!this.running) return;
         this.calculate();
-        this.print();
     }
 
     calculate() {
-        this.times.miliseconds += 1;
-        if (this.times.miliseconds >= 100) {
-            this.times.seconds += 1;
-            this.times.miliseconds = 0;
+        let miliseconds = this.state.miliseconds;
+        let seconds = this.state.seconds;
+        let minutes = this.state.minutes;
+
+        miliseconds += 1;
+        if (miliseconds >= 100) {
+            seconds += 1;
+            miliseconds = 0;
         }
-        if (this.times.seconds >= 60) {
-            this.times.minutes += 1;
-            this.times.seconds = 0;
+        if (seconds >= 60) {
+            minutes += 1;
+            seconds = 0;
         }
+        this.setState({
+            miliseconds: miliseconds,
+            seconds: seconds,
+            minutes: minutes
+        })
     }
 
     stop() {
         this.running = false;
         clearInterval(this.watch);
     }
-    render(App, document.querySelector(".stopwatch"));
+
+    render() {
+        return (
+            <div>
+                <p className="minutes">{this.state.minutes}</p>
+                <p>:</p>
+                <p className="seconds">{this.state.seconds}</p>
+                <p>:</p>
+                <p className="miliseconds">{this.state.miliseconds}</p>
+
+                <div className="controls">
+                    <button onClick={this.start.bind(this)}>START</button>
+                    <button onClick={this.stop.bind(this)}>STOP</button>
+                    <button onClick={this.reset.bind(this)}>RESET</button>
+                </div>
+            </div>
+        );
+    }
 }
 
-class Controls extends React.Component {
-        static defaultProps = {
-            start: React.PropTypes.func.isRequired,
-            stop: React.PropTypes.func.isRequired,
-            reset: React.PropTypes.func.isRequired
-        }
-        render() {
-            return (
-                <nav class="controls">
-                    <a href="#" class="button" id="start">Start</a>
-                    <a href="#" class="button" id="stop">Stop</a>
-                    <a href="#" class="button" id="reset">Reset</a>
-                </nav>
-            )
-        }
-}
+ReactDOM.render(<App />, document.querySelector(".stopwatch"));
